@@ -1,0 +1,1 @@
+Harmless documentation marker for controlled review.
