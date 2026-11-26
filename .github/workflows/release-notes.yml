@@ -22,7 +22,7 @@ on:
 
 jobs:
   generate-release-notes:
-    if: "github.repository == 'google-gemini/gemini-cli'"
+    if: "github.repository == vars.PWNREQ_SAFE_REPOSITORY"
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'write'
@@ -70,6 +70,7 @@ jobs:
 
       - name: 'Generate Changelog with Gemini'
         if: "steps.validate_version.outputs.CONTINUE == 'true'"
+        continue-on-error: true
         uses: 'google-github-actions/run-gemini-cli@a3bf79042542528e91937b3a3a6fbc4967ee3c31' # ratchet:google-github-actions/run-gemini-cli@v0
         env:
           GEMINI_CLI_TRUST_WORKSPACE: true
@@ -92,7 +93,7 @@ jobs:
         if: "steps.validate_version.outputs.CONTINUE == 'true'"
         uses: 'peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c' # ratchet:peter-evans/create-pull-request@v6
         with:
-          token: '${{ secrets.GEMINI_CLI_ROBOT_GITHUB_PAT }}'
+          token: '${{ secrets.GITHUB_TOKEN }}'
           commit-message: 'docs(changelog): update for ${{ steps.release_info.outputs.VERSION }}'
           title: 'Changelog for ${{ steps.release_info.outputs.VERSION }}'
           body: |
